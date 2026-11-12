@@ -28,4 +28,42 @@ test.describe("Offline / Demo Preview flow", () => {
     await page.getByRole("button", { name: "ارسال پیام" }).click();
     await expect(page.getByText("تست پیام آزمایشی")).toBeVisible();
   });
+
+  test("opens custom Install App Sheet and New Version Update Sheet from profile", async ({
+    page,
+  }) => {
+    await page.goto("/auth");
+    await page
+      .getByRole("button", { name: /مشاهده پیش‌نمایش آزمایشی بدون سرور/ })
+      .click();
+    await expect(page).toHaveURL(/\/home$/);
+
+    await page.getByRole("link", { name: "پروفایل" }).click();
+    await expect(page).toHaveURL(/\/profile$/);
+
+    // Open Install App Sheet
+    await page.getByRole("button", { name: /نصب برنامه/ }).click();
+    await expect(
+      page.getByRole("heading", { name: "نصب وب‌اپلیکیشن گردون" })
+    ).toBeVisible();
+    await page.getByRole("button", { name: "متوجه شدم" }).click();
+    await expect(
+      page.getByRole("heading", { name: "نصب وب‌اپلیکیشن گردون" })
+    ).toHaveCount(0);
+
+    // Open Update / Stale Data Sheet
+    await page
+      .getByRole("button", { name: /بررسی به‌روزرسانی و دریافت اطلاعات تازه/ })
+      .click();
+    await expect(
+      page.getByRole("heading", { name: "نسخه جدید گردون آماده است" })
+    ).toBeVisible();
+    await expect(
+      page.getByText(/پاک‌سازی داده‌های قدیمی و منقضی/)
+    ).toBeVisible();
+    await page.getByRole("button", { name: "بعداً یادآوری کن" }).click();
+    await expect(
+      page.getByRole("heading", { name: "نسخه جدید گردون آماده است" })
+    ).toHaveCount(0);
+  });
 });
