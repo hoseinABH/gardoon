@@ -39,3 +39,4 @@ dist/
 # Storage uploads (local receipt images)
 uploads/
 storage/
+*.tsbuildinfo
