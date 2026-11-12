@@ -24,7 +24,7 @@ public class ObligationController {
 
     private final ObligationService obligationService;
 
-    @GetMapping("/rounds/{roundId}/obligations")
+    @GetMapping({"/rounds/{roundId}/obligations", "/cycles/{roundId}/obligations"})
     public List<ObligationDto> getRoundObligations(@PathVariable UUID roundId) {
         return obligationService.getObligationsForRound(roundId, SecurityUtil.currentUserId());
     }

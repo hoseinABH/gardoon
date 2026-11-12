@@ -10,8 +10,8 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "rosca_rounds", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"group_id", "round_number"})
+@Table(name = "box_cycles", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"box_id", "cycle_number"})
 })
 @Getter
 @Setter
@@ -25,11 +25,27 @@ public class RoscaRound {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "box_id", nullable = false)
     private RoscaGroup group;
 
-    @Column(name = "round_number", nullable = false)
-    private Integer roundNumber;
+    @Column(name = "cycle_number", nullable = false)
+    private Integer cycleNumber;
+
+    public Integer getRoundNumber() {
+        return cycleNumber;
+    }
+
+    public void setRoundNumber(Integer roundNumber) {
+        this.cycleNumber = roundNumber;
+    }
+
+    public RoscaGroup getBox() {
+        return group;
+    }
+
+    public void setBox(RoscaGroup box) {
+        this.group = box;
+    }
 
     @Column(name = "due_date", nullable = false)
     private LocalDate dueDate;
@@ -77,5 +93,17 @@ public class RoscaRound {
         PENDING_DRAW,
         COLLECTING,
         SETTLED
+    }
+
+    public static class RoscaRoundBuilder {
+        public RoscaRoundBuilder roundNumber(Integer roundNumber) {
+            this.cycleNumber = roundNumber;
+            return this;
+        }
+
+        public RoscaRoundBuilder box(RoscaGroup box) {
+            this.group = box;
+            return this;
+        }
     }
 }

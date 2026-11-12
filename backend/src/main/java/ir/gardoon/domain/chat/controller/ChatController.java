@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/groups/{groupId}/chat")
+@RequestMapping({"/api/groups/{groupId}/chat", "/api/boxes/{groupId}/chat"})
 @RequiredArgsConstructor
 public class ChatController {
 

@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "rosca_groups")
+@Table(name = "boxes")
 @Getter
 @Setter
 @NoArgsConstructor

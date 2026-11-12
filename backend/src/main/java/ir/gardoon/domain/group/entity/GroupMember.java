@@ -9,8 +9,8 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "group_members", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"group_id", "user_id"})
+@Table(name = "box_members", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"box_id", "user_id"})
 })
 @Getter
 @Setter
@@ -24,7 +24,7 @@ public class GroupMember {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "box_id", nullable = false)
     private RoscaGroup group;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -45,8 +45,24 @@ public class GroupMember {
     @Builder.Default
     private Boolean hasWonPot = false;
 
-    @Column(name = "won_round_number")
-    private Integer wonRoundNumber;
+    @Column(name = "won_cycle_number")
+    private Integer wonCycleNumber;
+
+    public Integer getWonRoundNumber() {
+        return wonCycleNumber;
+    }
+
+    public void setWonRoundNumber(Integer wonRoundNumber) {
+        this.wonCycleNumber = wonRoundNumber;
+    }
+
+    public RoscaGroup getBox() {
+        return group;
+    }
+
+    public void setBox(RoscaGroup box) {
+        this.group = box;
+    }
 
     @CreationTimestamp
     @Column(name = "joined_at", nullable = false, updatable = false)
@@ -61,5 +77,17 @@ public class GroupMember {
         INVITED,
         ACTIVE,
         REMOVED
+    }
+
+    public static class GroupMemberBuilder {
+        public GroupMemberBuilder wonRoundNumber(Integer wonRoundNumber) {
+            this.wonCycleNumber = wonRoundNumber;
+            return this;
+        }
+
+        public GroupMemberBuilder box(RoscaGroup box) {
+            this.group = box;
+            return this;
+        }
     }
 }

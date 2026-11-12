@@ -24,8 +24,16 @@ public class ChatMessage {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "box_id", nullable = false)
     private RoscaGroup group;
+
+    public RoscaGroup getBox() {
+        return group;
+    }
+
+    public void setBox(RoscaGroup box) {
+        this.group = box;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_user_id")

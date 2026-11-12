@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "payment_obligations", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"round_id", "payer_user_id"})
+    @UniqueConstraint(columnNames = {"cycle_id", "payer_user_id"})
 })
 @Getter
 @Setter
@@ -24,8 +24,16 @@ public class PaymentObligation {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "round_id", nullable = false)
+    @JoinColumn(name = "cycle_id", nullable = false)
     private RoscaRound round;
+
+    public RoscaRound getCycle() {
+        return round;
+    }
+
+    public void setCycle(RoscaRound cycle) {
+        this.round = cycle;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payer_user_id", nullable = false)
@@ -71,5 +79,12 @@ public class PaymentObligation {
         RECEIPT_SUBMITTED,
         CONFIRMED,
         REJECTED
+    }
+
+    public static class PaymentObligationBuilder {
+        public PaymentObligationBuilder cycle(RoscaRound cycle) {
+            this.round = cycle;
+            return this;
+        }
     }
 }

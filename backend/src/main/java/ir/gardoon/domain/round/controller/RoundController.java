@@ -19,12 +19,12 @@ public class RoundController {
     private final RoundService roundService;
     private final LuckyDrawService luckyDrawService;
 
-    @GetMapping("/groups/{groupId}/rounds")
+    @GetMapping({"/groups/{groupId}/rounds", "/boxes/{groupId}/cycles"})
     public List<RoundDto> getGroupRounds(@PathVariable UUID groupId) {
         return roundService.getRoundsForGroup(groupId, SecurityUtil.currentUserId());
     }
 
-    @PostMapping("/rounds/{roundId}/draw")
+    @PostMapping({"/rounds/{roundId}/draw", "/cycles/{roundId}/draw"})
     public DrawResultDto executeDraw(@PathVariable UUID roundId) {
         return luckyDrawService.executeLuckyDraw(roundId, SecurityUtil.currentUserId());
     }

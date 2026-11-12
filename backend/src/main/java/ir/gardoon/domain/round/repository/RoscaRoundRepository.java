@@ -12,8 +12,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface RoscaRoundRepository extends JpaRepository<RoscaRound, UUID> {
-    List<RoscaRound> findByGroupIdOrderByRoundNumberAsc(UUID groupId);
-    Optional<RoscaRound> findByGroupIdAndRoundNumber(UUID groupId, Integer roundNumber);
+    List<RoscaRound> findByGroupIdOrderByCycleNumberAsc(UUID groupId);
+
+    @Query("SELECT r FROM RoscaRound r WHERE r.group.id = :groupId ORDER BY r.cycleNumber ASC")
+    List<RoscaRound> findByGroupIdOrderByRoundNumberAsc(@Param("groupId") UUID groupId);
+
+    Optional<RoscaRound> findByGroupIdAndCycleNumber(UUID groupId, Integer cycleNumber);
+
+    @Query("SELECT r FROM RoscaRound r WHERE r.group.id = :groupId AND r.cycleNumber = :roundNumber")
+    Optional<RoscaRound> findByGroupIdAndRoundNumber(@Param("groupId") UUID groupId, @Param("roundNumber") Integer roundNumber);
 
     /**
      * Pessimistic write lock for server-authoritative lucky draw execution.
