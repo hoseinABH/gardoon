@@ -22,7 +22,6 @@ import {
   phoneValid,
   shebaValid,
 } from "@/lib/validation/banking";
-import { DEMO_USER } from "@/features/groups/demoData";
 
 type Step = "PHONE" | "OTP" | "BANKING";
 
@@ -30,7 +29,7 @@ export function AuthScreen() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextPath = searchParams.get("next") || "/home";
-  const { setSession, setDemoUser, updateUser } = useAuthStore();
+  const { setSession, updateUser } = useAuthStore();
 
   const [step, setStep] = useState<Step>("PHONE");
   const [phone, setPhone] = useState("");
@@ -149,12 +148,6 @@ export function AuthScreen() {
     }
   };
 
-  const handleDemoLogin = () => {
-    setDemoUser(DEMO_USER);
-    toast.success("ورود با حساب آزمایشی انجام شد");
-    router.replace(nextPath);
-  };
-
   return (
     <Shell className="bg-background">
       <TopBar
@@ -225,17 +218,6 @@ export function AuthScreen() {
               >
                 دریافت کد تایید
               </Button>
-
-              <div className="pt-3 border-t border-white/6 text-center">
-                <Button
-                  variant="text"
-                  size="sm"
-                  onClick={handleDemoLogin}
-                  className="mx-auto"
-                >
-                  مشاهده پیش‌نمایش آزمایشی بدون سرور
-                </Button>
-              </div>
             </form>
           )}
 

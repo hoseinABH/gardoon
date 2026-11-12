@@ -1,41 +1,27 @@
 import { expect, test } from "@playwright/test";
+import {
+  makeLuhnCard,
+  makeValidSheba,
+  randomIranPhone,
+  signUpViaUi,
+} from "./helpers";
 
-test.describe("Offline / Demo Preview flow", () => {
-  test("launches demo user dashboard, runs demo due-date draw, and sends demo chat", async ({
-    page,
-  }) => {
-    await page.goto("/auth");
-    await page
-      .getByRole("button", { name: /مشاهده پیش‌نمایش آزمایشی بدون سرور/ })
-      .click();
-
-    await expect(page).toHaveURL(/\/home$/);
-    await expect(page.getByText("حالت پیش‌نمایش آزمایشی")).toBeVisible();
-
-    const activeFilterTabColor = await page
-      .getByRole("tab", { name: /همه/ })
-      .locator("span")
-      .last()
-      .evaluate((el) => window.getComputedStyle(el).color);
-    expect(activeFilterTabColor).toBe("rgb(7, 18, 7)");
-
-    // Open seeded demo group card
-    await page.locator('a[href^="/groups/"]').first().click();
-    await page.waitForURL(/\/groups\/.+/);
-
-    await page.getByRole("button", { name: /گفتگو/ }).click();
-    await page.getByRole("textbox", { name: "پیام جدید" }).fill("تست پیام آزمایشی");
-    await page.getByRole("button", { name: "ارسال پیام" }).click();
-    await expect(page.getByText("تست پیام آزمایشی")).toBeVisible();
-  });
-
+test.describe("Production PWA & Profile Sheet flows", () => {
   test("opens custom Install App Sheet and New Version Update Sheet from profile", async ({
     page,
   }) => {
-    await page.goto("/auth");
-    await page
-      .getByRole("button", { name: /مشاهده پیش‌نمایش آزمایشی بدون سرور/ })
-      .click();
+    const phone = randomIranPhone(45);
+    const card = makeLuhnCard("603799759911999");
+    const iban = makeValidSheba(`2960000000${phone.slice(1)}9`);
+
+    await signUpViaUi(page, {
+      phone,
+      fullName: "کاربر آزمایشی شیت",
+      card,
+      iban,
+      startUrl: "/auth",
+    });
+
     await expect(page).toHaveURL(/\/home$/);
 
     await page.getByRole("link", { name: "پروفایل" }).click();
