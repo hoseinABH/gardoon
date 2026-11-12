@@ -40,6 +40,15 @@ describe("Material Design System components", () => {
     );
     expect(screen.getByRole("button")).toBeDisabled();
     expect(screen.getByText("در حال ثبت...")).toBeInTheDocument();
+
+    rerender(
+      <Button variant="lime" loading>
+        ایجاد صندوق
+      </Button>
+    );
+    expect(screen.getByRole("button")).toBeDisabled();
+    expect(screen.queryByText("در حال پردازش...")).not.toBeInTheDocument();
+    expect(screen.getByRole("status", { name: "در حال بارگذاری" })).toBeInTheDocument();
   });
 
   it("renders IconButton with aria-label and ripple", () => {

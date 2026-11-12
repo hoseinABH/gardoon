@@ -88,12 +88,39 @@ a {
   }
 }
 
+@keyframes gardoon-dots {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.4);
+    opacity: 0.35;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 .animate-ripple {
   animation: gardoon-ripple 850ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .animate-pulse-glow {
   animation: gardoon-pulse-glow 4.2s ease-in-out infinite;
+}
+
+.animate-dot-1 {
+  animation: gardoon-dots 1.4s ease-in-out infinite;
+}
+
+.animate-dot-2 {
+  animation: gardoon-dots 1.4s ease-in-out infinite;
+  animation-delay: 0.2s;
+}
+
+.animate-dot-3 {
+  animation: gardoon-dots 1.4s ease-in-out infinite;
+  animation-delay: 0.4s;
 }
 
 .tabular-nums {

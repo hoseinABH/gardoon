@@ -196,3 +196,27 @@ interface UserProfile {
 
 #### Response (`200 OK`)
 Returns the updated `UserProfileDto` object.
+
+---
+
+### 2.7 Global Authentication & Access Control Responses
+
+#### Unauthorized Response (`401 Unauthorized`)
+*Triggered on any protected endpoint when the Authorization Bearer token is missing, expired, cryptographically invalid, or references a deleted/non-existent user ID.*
+```json
+{
+  "code": "UNAUTHORIZED",
+  "message": "اعتبار نشست شما به پایان رسیده است؛ لطفاً دوباره وارد شوید",
+  "status": 401
+}
+```
+
+#### Forbidden Response (`403 Forbidden`)
+*Triggered when an authenticated user attempts an operation or resource access they do not possess authorization for.*
+```json
+{
+  "code": "FORBIDDEN",
+  "message": "دسترسی به این بخش مجاز نیست",
+  "status": 403
+}
+```

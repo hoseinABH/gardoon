@@ -59,6 +59,7 @@ export interface ButtonProps
   trailing?: ReactNode;
   loading?: boolean;
   loadingLabel?: string;
+  loadingVariant?: "dots" | "circular";
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -71,7 +72,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     leading,
     trailing,
     loading = false,
-    loadingLabel = "در حال پردازش...",
+    loadingLabel,
+    loadingVariant = "dots",
     disabled,
     type = "button",
     onPointerDown,
@@ -102,17 +104,47 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     >
       <RippleLayer ripples={ripple.ripples} />
       {loading ? (
-        <Loader size={size === "sm" ? "xs" : "sm"} />
+        loadingLabel ? (
+          <>
+            <Loader
+              variant={loadingVariant}
+              size={size === "sm" ? "xs" : "sm"}
+            />
+            <span className="relative z-10 text-inherit">{loadingLabel}</span>
+          </>
+        ) : (
+          <>
+            <span className="invisible inline-flex items-center gap-2">
+              {leading && (
+                <span className="shrink-0 text-inherit">{leading}</span>
+              )}
+              <span className="text-inherit">{children}</span>
+              {trailing && (
+                <span className="shrink-0 text-inherit">{trailing}</span>
+              )}
+            </span>
+            <span className="absolute inset-0 flex items-center justify-center text-inherit">
+              <Loader
+                variant={loadingVariant}
+                size={size === "sm" ? "xs" : "sm"}
+              />
+            </span>
+          </>
+        )
       ) : (
-        leading && <span className="relative z-10 shrink-0 text-inherit">{leading}</span>
-      )}
-      <span className="relative z-10 text-inherit">
-        {loading ? loadingLabel : children}
-      </span>
-      {trailing && !loading && (
-        <span className="relative z-10 shrink-0 text-inherit transition-transform group-hover:-translate-x-0.5">
-          {trailing}
-        </span>
+        <>
+          {leading && (
+            <span className="relative z-10 shrink-0 text-inherit">
+              {leading}
+            </span>
+          )}
+          <span className="relative z-10 text-inherit">{children}</span>
+          {trailing && (
+            <span className="relative z-10 shrink-0 text-inherit transition-transform group-hover:-translate-x-0.5">
+              {trailing}
+            </span>
+          )}
+        </>
       )}
     </button>
   );
