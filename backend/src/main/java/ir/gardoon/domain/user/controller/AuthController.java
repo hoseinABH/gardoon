@@ -44,10 +44,14 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(
-        @CookieValue(name = REFRESH_COOKIE, required = false) String refreshToken,
+        @CookieValue(name = REFRESH_COOKIE, required = false) String cookieRefreshToken,
+        @RequestHeader(name = "X-Refresh-Token", required = false) String headerRefreshToken,
         HttpServletResponse response
     ) {
-        AuthService.TokenBundle bundle = authService.refresh(refreshToken);
+        String token = (cookieRefreshToken != null && !cookieRefreshToken.isBlank())
+            ? cookieRefreshToken
+            : headerRefreshToken;
+        AuthService.TokenBundle bundle = authService.refresh(token);
         setRefreshCookie(response, bundle.refreshToken(), Duration.ofDays(7));
         return ResponseEntity.ok(bundle.authResponse());
     }

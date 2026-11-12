@@ -30,10 +30,17 @@ export function getAccessToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
 }
 
-export function setAuthTokens(accessToken: string, refreshToken: string) {
+export function getRefreshToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(REFRESH_KEY);
+}
+
+export function setAuthTokens(accessToken: string, refreshToken?: string) {
   if (typeof window === "undefined") return;
   localStorage.setItem(TOKEN_KEY, accessToken);
-  localStorage.setItem(REFRESH_KEY, refreshToken);
+  if (refreshToken) {
+    localStorage.setItem(REFRESH_KEY, refreshToken);
+  }
 }
 
 export function clearAuthTokens() {
@@ -42,7 +49,84 @@ export function clearAuthTokens() {
   localStorage.removeItem(REFRESH_KEY);
 }
 
-async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+type UnauthorizedListener = () => void;
+const unauthorizedListeners = new Set<UnauthorizedListener>();
+
+export function onUnauthorized(listener: UnauthorizedListener): () => void {
+  unauthorizedListeners.add(listener);
+  return () => {
+    unauthorizedListeners.delete(listener);
+  };
+}
+
+let isRefreshing = false;
+let refreshPromise: Promise<string | null> | null = null;
+
+async function attemptTokenRefresh(): Promise<string | null> {
+  if (isRefreshing && refreshPromise) {
+    return refreshPromise;
+  }
+
+  isRefreshing = true;
+  refreshPromise = (async () => {
+    try {
+      const refreshToken = getRefreshToken();
+      const headers = new Headers();
+      if (refreshToken) {
+        headers.set("X-Refresh-Token", refreshToken);
+      }
+
+      const res = await fetch("/api/auth/refresh", {
+        method: "POST",
+        headers,
+      });
+
+      if (!res.ok) {
+        return null;
+      }
+
+      const data = (await res.json()) as AuthResponse;
+      if (data?.accessToken) {
+        setAuthTokens(data.accessToken, data.refreshToken || refreshToken || undefined);
+        return data.accessToken;
+      }
+      return null;
+    } catch {
+      return null;
+    } finally {
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+}
+
+export function handleSessionExpired() {
+  clearAuthTokens();
+  unauthorizedListeners.forEach((listener) => {
+    try {
+      listener();
+    } catch {
+      // Ignore listener errors
+    }
+  });
+
+  if (typeof window !== "undefined") {
+    if (
+      !window.location.pathname.startsWith("/auth") &&
+      window.location.pathname !== "/"
+    ) {
+      window.location.href = "/auth";
+    }
+  }
+}
+
+async function request<T>(
+  path: string,
+  init: RequestInit = {},
+  isRetry = false
+): Promise<T> {
   const token = getAccessToken();
   const headers = new Headers(init.headers);
   if (token) {
@@ -53,6 +137,20 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   }
 
   const res = await fetch(path, { ...init, headers });
+
+  if (res.status === 401) {
+    const isAuthEndpoint = path.startsWith("/api/auth/");
+    if (!isAuthEndpoint && !isRetry) {
+      const newAccessToken = await attemptTokenRefresh();
+      if (newAccessToken) {
+        return request<T>(path, init, true);
+      }
+    }
+    if (!isAuthEndpoint) {
+      handleSessionExpired();
+    }
+  }
+
   const text = await res.text();
   let json: unknown = null;
   try {

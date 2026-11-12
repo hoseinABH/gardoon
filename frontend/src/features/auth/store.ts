@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { UserProfile } from "@/lib/api/types";
-import { clearAuthTokens, setAuthTokens } from "@/lib/api/client";
+import { clearAuthTokens, onUnauthorized, setAuthTokens } from "@/lib/api/client";
 
 export function useHasMounted(): boolean {
   const [mounted, setMounted] = useState(false);
@@ -58,3 +58,9 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+
+if (typeof window !== "undefined") {
+  onUnauthorized(() => {
+    useAuthStore.getState().logout();
+  });
+}

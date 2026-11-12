@@ -6,6 +6,7 @@ const FORWARDED_REQUEST_HEADERS = [
   "accept",
   "cookie",
   "idempotency-key",
+  "x-refresh-token",
 ];
 
 export function resolveBackendOrigin(): string {
