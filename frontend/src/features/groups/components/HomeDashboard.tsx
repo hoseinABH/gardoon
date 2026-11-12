@@ -45,7 +45,7 @@ export function HomeDashboard() {
   }, [hydrated, user, router]);
 
   const { data: liveGroups, isLoading } = useQuery({
-    queryKey: ["groups"],
+    queryKey: ["groups", user?.id],
     queryFn: api.groups.list,
     enabled: hydrated && Boolean(user) && !demoMode,
   });

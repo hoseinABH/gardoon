@@ -34,7 +34,6 @@ export function AuthScreen() {
   const [step, setStep] = useState<Step>("PHONE");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
-  const [devCode, setDevCode] = useState<string | null>(null);
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -63,11 +62,8 @@ export function AuthScreen() {
     }
     setLoading(true);
     try {
-      const res = await api.auth.sendOtp(cleanPhone);
-      setDevCode(res.devCode ?? null);
-      if (res.devCode) {
-        setOtp(res.devCode);
-      }
+      await api.auth.sendOtp(cleanPhone);
+      setOtp("");
       toast.success("کد تایید ارسال شد");
       setStep("OTP");
     } catch (err) {
@@ -223,21 +219,6 @@ export function AuthScreen() {
 
           {step === "OTP" && (
             <form onSubmit={handleVerifyOtp} className="space-y-5">
-              {devCode && (
-                <div className="flex items-center justify-between rounded-2xl border border-primary/30 bg-primary/10 px-4 py-2.5">
-                  <Typography variant="label-md" tone="primary">
-                    کد آزمایشی توسعه:
-                  </Typography>
-                  <Typography
-                    variant="title-sm"
-                    numeric
-                    className="font-mono tracking-widest"
-                  >
-                    {toFaDigits(devCode)}
-                  </Typography>
-                </div>
-              )}
-
               <TextField
                 label="کد تایید ۵ رقمی"
                 inputMode="numeric"

@@ -50,6 +50,26 @@ interface UserProfile {
 ```
 *(Note: `devCode` is only returned when `app.auth.dev-mode=true`)*
 
+#### Rate Limit Response (`429 Too Many Requests`)
+*Triggered if a subsequent OTP is requested for the same phone number within 60 seconds.*
+```json
+{
+  "code": "OTP_COOLDOWN",
+  "message": "لطفاً ۵۸ ثانیه دیگر دوباره تلاش کنید",
+  "status": 429
+}
+```
+
+#### Provider Error Response (`502 Bad Gateway`)
+*Triggered in production if the SMS provider returns a failure or network error.*
+```json
+{
+  "code": "SMS_PROVIDER_ERROR",
+  "message": "خطا در ارسال پیامک توسط سرویس‌دهنده",
+  "status": 502
+}
+```
+
 ---
 
 ### 2.2 Verify OTP Code & Login

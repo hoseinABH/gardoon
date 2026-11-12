@@ -6,6 +6,7 @@ import ir.gardoon.domain.user.dto.AuthResponse;
 import ir.gardoon.domain.user.dto.UserProfileDto;
 import ir.gardoon.domain.user.entity.User;
 import ir.gardoon.domain.user.repository.UserRepository;
+import ir.gardoon.domain.user.service.sms.SmsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
@@ -26,20 +28,32 @@ public class AuthService {
 
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final long OTP_TTL_SECONDS = 120;
+    private static final long COOLDOWN_SECONDS = 60;
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final SmsService smsService;
 
     @Value("${app.auth.dev-mode:true}")
     private boolean devMode;
 
     private record OtpEntry(String code, Instant expiresAt) {}
     private final Map<String, OtpEntry> otpStore = new ConcurrentHashMap<>();
+    private final Map<String, Instant> cooldownStore = new ConcurrentHashMap<>();
 
     public String sendOtp(String phoneNumber) {
+        Instant nextAllowed = cooldownStore.get(phoneNumber);
+        if (nextAllowed != null && nextAllowed.isAfter(Instant.now())) {
+            long remaining = Duration.between(Instant.now(), nextAllowed).getSeconds() + 1;
+            throw new ApiException(HttpStatus.TOO_MANY_REQUESTS, "OTP_COOLDOWN", "لطفاً " + remaining + " ثانیه دیگر دوباره تلاش کنید");
+        }
+
         String code = String.format("%05d", RANDOM.nextInt(100_000));
         otpStore.put(phoneNumber, new OtpEntry(code, Instant.now().plusSeconds(OTP_TTL_SECONDS)));
-        log.info("[DEV SMS OTP] Phone: {} -> Code: {} (devMode={})", phoneNumber, code, devMode);
+        cooldownStore.put(phoneNumber, Instant.now().plusSeconds(COOLDOWN_SECONDS));
+
+        log.info("[OTP GENERATED] Phone: {} -> Code: {} (devMode={})", phoneNumber, code, devMode);
+        smsService.sendOtp(phoneNumber, code);
         return devMode ? code : null;
     }
 

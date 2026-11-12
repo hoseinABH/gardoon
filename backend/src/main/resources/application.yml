@@ -1,6 +1,12 @@
 spring:
   application:
     name: gardoon-backend
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  config:
+    import:
+      - optional:file:../.env[.properties]
+      - optional:file:./.env[.properties]
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/gardoon_db}
     username: ${SPRING_DATASOURCE_USERNAME:gardoon_user}
@@ -38,6 +44,13 @@ app:
     refresh-expiration-ms: ${APP_JWT_REFRESH_EXPIRATION_MS:604800000} # 7 days
   auth:
     dev-mode: ${APP_AUTH_DEV_MODE:true}
+  sms:
+    provider: ${APP_SMS_PROVIDER:mock}
+    api-key: ${APP_SMS_API_KEY:}
+    template-id: ${APP_SMS_TEMPLATE_ID:0}
+    param-name: ${APP_SMS_PARAM_NAME:Code}
+    line-number: ${APP_SMS_LINE_NUMBER:0}
+    base-url: ${APP_SMS_BASE_URL:https://api.sms.ir/v1}
   storage:
     upload-dir: ${APP_STORAGE_UPLOAD_DIR:./uploads/receipts}
   cors:
