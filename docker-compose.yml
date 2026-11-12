@@ -1,0 +1,22 @@
+services:
+  gardoon-postgres:
+    image: postgres:16-alpine
+    container_name: gardoon-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: gardoon_db
+      POSTGRES_USER: gardoon_user
+      POSTGRES_PASSWORD: gardoon_secret_password
+    ports:
+      - "5433:5432" # Mapped to 5433 to avoid collision with port 5432
+    volumes:
+      - gardoon_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gardoon_user -d gardoon_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  gardoon_pgdata:
+    name: gardoon_pgdata

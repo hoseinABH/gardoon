@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: gardoon-backend
+  datasource:
+    url: jdbc:postgresql://localhost:5433/gardoon_db
+    username: gardoon_user
+    password: gardoon_secret_password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: 8080
+
+app:
+  jwt:
+    secret: 
+    expiration-ms: 86400000 # 24 hours
+  storage:
+    upload-dir: ./uploads/receipts
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

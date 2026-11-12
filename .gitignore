@@ -1,0 +1,41 @@
+# Logs & temp files
+*.log
+logs/
+*.pid
+tmp/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Dependencies
+node_modules/
+.pnpm-store/
+target/
+*.class
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+!docker-compose.yml
+
+# Storage uploads (local receipt images)
+uploads/
+storage/
