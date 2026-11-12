@@ -38,8 +38,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl" className={`dark ${iranSans.variable}`}>
-      <body className="bg-canvas text-foreground antialiased">
+    <html
+      lang="fa"
+      dir="rtl"
+      suppressHydrationWarning
+      className={`dark ${iranSans.variable}`}
+    >
+      <body
+        suppressHydrationWarning
+        className="bg-canvas text-foreground antialiased"
+      >
         <Providers>{children}</Providers>
       </body>
     </html>
