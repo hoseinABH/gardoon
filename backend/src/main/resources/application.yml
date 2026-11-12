@@ -29,6 +29,9 @@ app:
   jwt:
     secret: 
     expiration-ms: 86400000 # 24 hours
+    refresh-expiration-ms: 604800000 # 7 days
+  auth:
+    dev-mode: true
   storage:
     upload-dir: ./uploads/receipts
 

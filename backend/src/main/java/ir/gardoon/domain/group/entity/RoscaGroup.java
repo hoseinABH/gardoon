@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -45,6 +46,9 @@ public class RoscaGroup {
 
     @Column(name = "jalali_due_day", nullable = false)
     private Integer jalaliDueDay; // 1-31
+
+    @Column(name = "start_date")
+    private LocalDate startDate;
 
     @Column(name = "grace_period_hours", nullable = false)
     @Builder.Default

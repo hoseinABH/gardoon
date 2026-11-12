@@ -29,6 +29,10 @@ public class User {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
+    @Column(name = "avatar_hue", nullable = false)
+    @Builder.Default
+    private Integer avatarHue = 160;
+
     @Column(name = "default_card_number", length = 16)
     private String defaultCardNumber;
 

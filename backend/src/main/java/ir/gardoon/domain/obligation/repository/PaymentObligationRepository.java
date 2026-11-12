@@ -10,6 +10,7 @@ import java.util.UUID;
 public interface PaymentObligationRepository extends JpaRepository<PaymentObligation, UUID> {
     List<PaymentObligation> findByRoundId(UUID roundId);
     Optional<PaymentObligation> findByRoundIdAndPayerId(UUID roundId, UUID payerId);
+    Optional<PaymentObligation> findByIdempotencyKey(UUID idempotencyKey);
     List<PaymentObligation> findByPayerIdAndStatus(UUID payerId, PaymentObligation.ObligationStatus status);
     List<PaymentObligation> findByBeneficiaryIdAndStatus(UUID beneficiaryId, PaymentObligation.ObligationStatus status);
 }

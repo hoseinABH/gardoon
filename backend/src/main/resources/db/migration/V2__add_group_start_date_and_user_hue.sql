@@ -1,0 +1,5 @@
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS avatar_hue INT NOT NULL DEFAULT 160;
+
+ALTER TABLE rosca_groups
+    ADD COLUMN IF NOT EXISTS start_date DATE;
