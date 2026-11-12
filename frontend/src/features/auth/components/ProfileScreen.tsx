@@ -15,6 +15,7 @@ import {
 } from "@/components/ui";
 import { api, ApiClientError } from "@/lib/api/client";
 import { useAuthStore, useHasMounted } from "@/features/auth/store";
+import { usePwaStore } from "@/features/pwa";
 import { onlyDigits, toEnDigits, toFaDigits } from "@/lib/format/digits";
 import { detectBank, luhnValid, shebaValid } from "@/lib/validation/banking";
 
@@ -22,6 +23,14 @@ export function ProfileScreen() {
   const router = useRouter();
   const mounted = useHasMounted();
   const { user, demoMode, hydrated, updateUser, logout } = useAuthStore();
+  const {
+    isStandalone,
+    updateAvailable,
+    isCheckingUpdate,
+    openInstallSheet,
+    openUpdateSheet,
+    checkForUpdate,
+  } = usePwaStore();
 
   const [cardNumber, setCardNumber] = useState("");
   const [iban, setIban] = useState("");
@@ -102,6 +111,21 @@ export function ProfileScreen() {
     logout();
     toast.success("از حساب کاربری خارج شدید");
     router.replace("/");
+  };
+
+  const handleCheckUpdate = async () => {
+    if (demoMode || updateAvailable) {
+      openUpdateSheet();
+      return;
+    }
+    const result = await checkForUpdate();
+    if (result === "up-to-date") {
+      toast.success(
+        "برنامه شما از آخرین نگارش گردون استفاده می‌کند و اطلاعات به‌روز هستند"
+      );
+    } else if (result === "unsupported") {
+      toast.info("برنامه در حال استفاده از آخرین اطلاعات همگام‌سازی‌شده است");
+    }
   };
 
   return (
@@ -199,6 +223,53 @@ export function ProfileScreen() {
             ذخیره مشخصات بانکی
           </Button>
         </form>
+
+        <section className="space-y-3 rounded-3xl border border-white/8 bg-card p-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sun/15 text-sun">
+                <Icons.Smartphone className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <Typography variant="label-md" className="block truncate">
+                  وب‌اپلیکیشن و نگارش برنامه
+                </Typography>
+                <Typography variant="body-sm" tone="muted" className="block">
+                  نسخه {toFaDigits("1.0.0")}
+                </Typography>
+              </div>
+            </div>
+            {isStandalone ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-success/30 bg-success/15 px-2.5 py-1 text-micro font-bold text-success">
+                <Icons.CheckCircle2 className="h-3 w-3" />
+                نصب‌شده
+              </span>
+            ) : (
+              <Button
+                variant="sun"
+                size="sm"
+                leading={<Icons.Download className="h-3.5 w-3.5" />}
+                onClick={openInstallSheet}
+              >
+                نصب برنامه
+              </Button>
+            )}
+          </div>
+
+          <Button
+            variant={updateAvailable ? "sun" : "glass"}
+            size="md"
+            block
+            loading={isCheckingUpdate}
+            loadingLabel="در حال بررسی نگارش جدید..."
+            leading={<Icons.RefreshCw className="h-4 w-4" />}
+            onClick={handleCheckUpdate}
+          >
+            {updateAvailable
+              ? "نسخه جدید آماده است — به‌روزرسانی"
+              : "بررسی به‌روزرسانی و دریافت اطلاعات تازه"}
+          </Button>
+        </section>
 
         <Button
           variant="danger"
