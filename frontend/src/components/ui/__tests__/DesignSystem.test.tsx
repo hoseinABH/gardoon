@@ -60,6 +60,19 @@ describe("Material Design System components", () => {
     const btn = screen.getByRole("button", { name: "بازگشت" });
     fireEvent.pointerDown(btn, { clientX: 12, clientY: 12 });
     expect(container.querySelector(".animate-ripple")).toBeInTheDocument();
+    fireEvent.pointerUp(btn);
+  });
+
+  it("creates Material Design 3 furthest-corner ripple and transitions on release", () => {
+    const { container } = render(<Button variant="sun">دکمه تستی</Button>);
+    const btn = screen.getByRole("button", { name: "دکمه تستی" });
+
+    fireEvent.pointerDown(btn, { clientX: 30, clientY: 20 });
+    const ripple = container.querySelector(".animate-ripple");
+    expect(ripple).toBeInTheDocument();
+    expect(ripple?.className).toContain("animate-ripple-enter");
+
+    fireEvent.pointerUp(btn);
   });
 
   it("normalizes Persian digits in TextField, exposes clear button, and renders error/hint", async () => {

@@ -61,9 +61,25 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
           ripple.onPointerDown(e);
           onPointerDown?.(e);
         }}
+        onPointerUp={(e) => {
+          ripple.onPointerUp();
+          props.onPointerUp?.(e);
+        }}
+        onPointerLeave={(e) => {
+          ripple.onPointerLeave();
+          props.onPointerLeave?.(e);
+        }}
+        onPointerCancel={(e) => {
+          ripple.onPointerCancel();
+          props.onPointerCancel?.(e);
+        }}
         onKeyDown={(e) => {
           ripple.onKeyDown(e);
           onKeyDown?.(e);
+        }}
+        onKeyUp={(e) => {
+          ripple.onKeyUp(e);
+          props.onKeyUp?.(e);
         }}
         className={cn(iconButtonVariants({ variant, size }), className)}
       >

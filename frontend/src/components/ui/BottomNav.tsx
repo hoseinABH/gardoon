@@ -36,8 +36,7 @@ function NavLinkItem({
         href={href}
         aria-label={label}
         aria-current={active ? "page" : undefined}
-        onPointerDown={ripple.onPointerDown}
-        onKeyDown={ripple.onKeyDown}
+        {...ripple.handlers}
         className="flex w-full items-center justify-center py-2 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary"
       >
         <span

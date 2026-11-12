@@ -62,16 +62,37 @@ a {
   -webkit-user-drag: none;
 }
 
+@keyframes gardoon-ripple-enter {
+  0% {
+    transform: scale(0);
+    opacity: 0.14;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.12;
+  }
+}
+
+@keyframes gardoon-ripple-exit {
+  0% {
+    opacity: 0.12;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 @keyframes gardoon-ripple {
   0% {
     transform: scale(0);
-    opacity: 0.42;
+    opacity: 0.14;
   }
-  55% {
-    opacity: 0.22;
+  45% {
+    transform: scale(1);
+    opacity: 0.12;
   }
   100% {
-    transform: scale(2.8);
+    transform: scale(1);
     opacity: 0;
   }
 }
@@ -102,7 +123,16 @@ a {
 }
 
 .animate-ripple {
-  animation: gardoon-ripple 850ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity;
+  transform-origin: center center;
+}
+
+.animate-ripple-enter {
+  animation: gardoon-ripple-enter 260ms cubic-bezier(0.05, 0.7, 0.1, 1) forwards;
+}
+
+.animate-ripple-exit {
+  animation: gardoon-ripple-exit 200ms cubic-bezier(0.4, 0, 1, 1) forwards;
 }
 
 .animate-pulse-glow {

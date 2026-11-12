@@ -34,8 +34,7 @@ export function CopyButton({
     <button
       type="button"
       onClick={onCopy}
-      onPointerDown={ripple.onPointerDown}
-      onKeyDown={ripple.onKeyDown}
+      {...ripple.handlers}
       className={cn(
         "relative inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap overflow-hidden rounded-full bg-white/8 px-3 py-1 text-foreground hover:bg-white/14 active:scale-95 transition cursor-pointer",
         className

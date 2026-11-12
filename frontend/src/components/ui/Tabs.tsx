@@ -42,8 +42,7 @@ function TabButton<T extends string>({
         role="tab"
         aria-selected={selected}
         onClick={() => onSelect(item.id)}
-        onPointerDown={ripple.onPointerDown}
-        onKeyDown={ripple.onKeyDown}
+        {...ripple.handlers}
         className={cn(
           "relative shrink-0 overflow-hidden rounded-full border px-4 py-2 text-xs font-bold transition-colors duration-200 cursor-pointer",
           selected
@@ -80,8 +79,7 @@ function TabButton<T extends string>({
       role="tab"
       aria-selected={selected}
       onClick={() => onSelect(item.id)}
-      onPointerDown={ripple.onPointerDown}
-      onKeyDown={ripple.onKeyDown}
+      {...ripple.handlers}
       className={cn(
         "relative flex flex-1 items-center justify-center gap-1.5 overflow-hidden rounded-full h-10 px-3 transition-colors duration-200 cursor-pointer",
         selected
