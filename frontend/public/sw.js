@@ -62,8 +62,26 @@ self.addEventListener("install", (event) => {
             .catch(() => undefined)
         )
       ),
-    ]).then(() => self.skipWaiting())
+    ]).then(() => {
+      // Activate immediately on initial install; hold updates in waiting state
+      // so the client can prompt the user to refresh stale data cleanly.
+      if (!self.registration.active) {
+        return self.skipWaiting();
+      }
+      return undefined;
+    })
   );
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    event.waitUntil(
+      caches
+        .delete(PAGES_CACHE)
+        .catch(() => undefined)
+        .then(() => self.skipWaiting())
+    );
+  }
 });
 
 self.addEventListener("activate", (event) => {
