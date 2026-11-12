@@ -17,6 +17,12 @@ export default defineConfig({
     viewport: { width: 390, height: 844 },
     trace: "retain-on-failure",
   },
+  webServer: {
+    command: "pnpm dev",
+    port: 3000,
+    reuseExistingServer: true,
+    timeout: 120_000,
+  },
   projects: [
     {
       name: "mobile-chrome",
